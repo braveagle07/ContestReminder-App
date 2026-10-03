@@ -19,6 +19,15 @@ jobs:
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          packages: |
+            platform-tools
+            build-tools;34.0.0
+            platforms;android-34
+            cmdline-tools;latest
+
+      - name: Accept licenses
+        run: yes | sdkmanager --licenses || true
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v3
@@ -27,7 +36,9 @@ jobs:
         run: gradle wrapper --gradle-version 8.4
 
       - name: Build debug APK
-        run: ./gradlew assembleDebug --no-daemon
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
